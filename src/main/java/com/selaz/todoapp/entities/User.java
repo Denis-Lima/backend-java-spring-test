@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -26,6 +27,9 @@ public class User {
     @Column(nullable = false)
     @NotBlank
     private String nivel;
+
+    @OneToMany(mappedBy = "user")
+    private List<Task> userTasks;
 
     @Override
     public final boolean equals(Object o) {
