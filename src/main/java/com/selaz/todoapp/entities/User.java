@@ -1,10 +1,13 @@
 package com.selaz.todoapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,8 +31,15 @@ public class User {
     @NotBlank
     private String nivel;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user")
-    private List<Task> userTasks;
+    @JsonManagedReference
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private List<Task> userTasks = Collections.emptyList();
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false)
+    private String password;
 
     @Override
     public final boolean equals(Object o) {
