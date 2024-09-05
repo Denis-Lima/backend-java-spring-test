@@ -12,7 +12,7 @@ public interface UserService {
 
     User createUser(CreateUserDTO createUserInfo) throws ValidationException;
 
-    User updateUser(Long userId, UpdateUserDTO updateUserInfo);
+    User updateUser(Long userId, UpdateUserDTO updateUserInfo) throws ValidationException;
 
     void deleteUser(Long userId);
 }

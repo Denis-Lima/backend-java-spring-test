@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserValidator userValidator;
 
+
     @Override
     public List<User> findAllUsers() {
         return userRepository.findAll();
@@ -35,10 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(CreateUserDTO createUserInfo) throws ValidationException {
-        Optional<User> optionalUser = userRepository.findByUsernameIgnoreCase(createUserInfo.username());
-        if (optionalUser.isPresent()) {
-            throw new ResourceAlreadyExistsException("This username is already used");
-        }
+        checkUsernameExists(createUserInfo.username());
 
         User newUser = new User();
         userMapper.userFromCreateUserDTO(createUserInfo, newUser);
@@ -46,26 +44,37 @@ public class UserServiceImpl implements UserService {
 
         userValidator.validate(newUser);
 
-        userRepository.save(newUser);
-        return newUser;
+        return userRepository.save(newUser);
+    }
+
+    private void checkUsernameExists(String username) {
+        Optional<User> optionalUser = userRepository.findByUsernameIgnoreCase(username);
+        if (optionalUser.isPresent()) {
+            throw new ResourceAlreadyExistsException("This username is already used");
+        }
     }
 
     @Override
-    public User updateUser(Long userId, UpdateUserDTO updateUserInfo) {
+    public User updateUser(Long userId, UpdateUserDTO updateUserInfo) throws ValidationException {
+        userValidator.validateUpdateUserDTO(updateUserInfo);
+
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
             throw new ResourceNotFoundException("User with this ID not found");
         }
 
+        if (updateUserInfo.username() != null) {
+            checkUsernameExists(updateUserInfo.username());
+        }
+
         User user = optionalUser.get();
         userMapper.updateUserFromUpdateUserDTO(updateUserInfo, user);
+
         if (updateUserInfo.password() != null) {
             user.setPassword(passwordEncoder.encode(updateUserInfo.password()));
         }
 
-        userRepository.save(user);
-
-        return user;
+        return userRepository.save(user);
     }
 
     @Override

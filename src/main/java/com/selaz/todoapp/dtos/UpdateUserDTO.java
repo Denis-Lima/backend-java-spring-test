@@ -1,4 +1,7 @@
 package com.selaz.todoapp.dtos;
 
-public record UpdateUserDTO(String username, String nivel, String password) {
+import com.selaz.todoapp.validators.NullOrNotBlank;
+
+public record UpdateUserDTO(@NullOrNotBlank String username, @NullOrNotBlank String nivel,
+                            @NullOrNotBlank String password) {
 }

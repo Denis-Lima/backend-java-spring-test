@@ -5,6 +5,7 @@ import com.selaz.todoapp.dtos.UpdateUserDTO;
 import com.selaz.todoapp.entities.User;
 import com.selaz.todoapp.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.xml.bind.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,13 +28,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody CreateUserDTO createUserDTO) throws ValidationException {
+    public ResponseEntity<User> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) throws ValidationException {
         User createdUser = userService.createUser(createUserDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO updateUserDTO) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO updateUserDTO) throws ValidationException {
         User updatedUser = userService.updateUser(id, updateUserDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
