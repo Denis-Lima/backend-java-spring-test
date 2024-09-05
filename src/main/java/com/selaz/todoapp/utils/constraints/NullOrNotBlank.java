@@ -1,4 +1,4 @@
-package com.selaz.todoapp.validators;
+package com.selaz.todoapp.utils.constraints;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

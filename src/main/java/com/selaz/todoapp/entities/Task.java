@@ -3,6 +3,7 @@ package com.selaz.todoapp.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Date;
@@ -26,6 +27,7 @@ public class Task {
     private String description;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private Date createdAt;
 
     @Column(nullable = false)
