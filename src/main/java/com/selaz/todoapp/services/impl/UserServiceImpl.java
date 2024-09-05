@@ -63,11 +63,11 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User with this ID not found");
         }
 
-        if (updateUserInfo.username() != null) {
+        User user = optionalUser.get();
+        if (updateUserInfo.username() != null && !updateUserInfo.username().equals(user.getUsername())) {
             checkUsernameExists(updateUserInfo.username());
         }
 
-        User user = optionalUser.get();
         userMapper.updateUserFromUpdateUserDTO(updateUserInfo, user);
 
         if (updateUserInfo.password() != null) {
