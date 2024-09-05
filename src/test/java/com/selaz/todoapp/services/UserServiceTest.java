@@ -4,6 +4,7 @@ import com.selaz.todoapp.dtos.CreateUserDTO;
 import com.selaz.todoapp.dtos.UpdateUserDTO;
 import com.selaz.todoapp.entities.User;
 import com.selaz.todoapp.exceptions.ResourceAlreadyExistsException;
+import com.selaz.todoapp.exceptions.ResourceNotFoundException;
 import com.selaz.todoapp.repositories.UserRepository;
 import com.selaz.todoapp.services.impl.UserServiceImpl;
 import jakarta.validation.ConstraintViolationException;
@@ -171,6 +172,15 @@ public class UserServiceTest {
 
         Assertions.assertThatThrownBy(() -> userService.updateUser(1L, updateUserDTO))
                 .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    @DisplayName("Given not existing user when updateUser, then throw ResourceNotFoundException")
+    void Given_NotExistingUser_When_UpdateUser_Then_ThrowResourceNotFoundException() {
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO("test123", "admin", null);
+
+        Assertions.assertThatThrownBy(() -> userService.updateUser(1L, updateUserDTO))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
