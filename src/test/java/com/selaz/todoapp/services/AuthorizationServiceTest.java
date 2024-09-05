@@ -37,7 +37,7 @@ public class AuthorizationServiceTest {
     @Test
     @DisplayName("given correct username when loadUserByUsername, then return UserDetails")
     void Given_CorrectUsername_When_LoadUserByUsername_Then_ReturnUserDetails() {
-        User user = createTestUser(1L);
+        User user = createTestUser();
 
         Mockito.when(userRepository.findByUsernameIgnoreCase(user.getUsername())).thenReturn(Optional.of(user));
 
@@ -54,12 +54,12 @@ public class AuthorizationServiceTest {
                 .isInstanceOf(UsernameNotFoundException.class);
     }
 
-    private User createTestUser(Long id) {
+    private User createTestUser() {
         User user = new User();
-        user.setId(id);
+        user.setId(1L);
         user.setNivel("admin");
         user.setPassword("PASSWORD");
-        user.setUsername("testUser" + id);
+        user.setUsername("testUser" + (Long) 1L);
         return user;
     }
 }
