@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/tasks")
-    @Operation(summary = "List all user tasks", responses = {
+    @Operation(summary = "List all user tasks", security = @SecurityRequirement(name = "bearerAuth"), responses = {
             @ApiResponse(description = "List of tasks", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Task.class))), responseCode = "200"),
     })
     @PreAuthorize("hasRole('ADMIN')")
