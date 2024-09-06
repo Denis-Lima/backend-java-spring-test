@@ -2,7 +2,9 @@ package com.selaz.todoapp.controllers;
 
 import com.selaz.todoapp.dtos.CreateUserDTO;
 import com.selaz.todoapp.dtos.UpdateUserDTO;
+import com.selaz.todoapp.entities.Task;
 import com.selaz.todoapp.entities.User;
+import com.selaz.todoapp.services.TaskService;
 import com.selaz.todoapp.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,11 +30,14 @@ import java.util.List;
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    TaskService taskService;
 
     @GetMapping
     @Operation(summary = "List all users", security = @SecurityRequirement(name = "bearerAuth"), responses = {
             @ApiResponse(description = "List of users", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = User.class))), responseCode = "200"),
     })
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> listAllUsers() {
         List<User> users = userService.findAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -62,5 +68,15 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/tasks")
+    @Operation(summary = "List all user tasks", responses = {
+            @ApiResponse(description = "List of tasks", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Task.class))), responseCode = "200"),
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Task>> listAllUserTask(@PathVariable Long userId) {
+        List<Task> userTasks = taskService.getUserTasks(userId, null, null);
+        return new ResponseEntity<>(userTasks, HttpStatus.OK);
     }
 }
